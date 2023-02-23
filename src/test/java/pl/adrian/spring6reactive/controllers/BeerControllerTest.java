@@ -6,6 +6,8 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import pl.adrian.spring6reactive.model.BeerDTO;
+import pl.adrian.spring6reactive.repositories.BeerRepositoryTest;
+import reactor.core.publisher.Mono;
 
 import static org.hamcrest.Matchers.hasSize;
 
@@ -32,5 +34,15 @@ class BeerControllerTest {
                 .expectStatus().isOk()
                 .expectHeader().valueEquals("Content-type", "application/json")
                 .expectBody(BeerDTO.class);
+    }
+
+    @Test
+    void testCreateBeer() {
+        webTestClient.post().uri(BeerController.BEER_PATH)
+                .body(Mono.just(BeerRepositoryTest.getBeer()), BeerDTO.class)
+                .header("Content-type", "application/json")
+                .exchange()
+                .expectStatus().isCreated()
+                .expectHeader().location("http://localhost:8080" + BeerController.BEER_PATH + "/4");
     }
 }
