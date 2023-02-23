@@ -2,6 +2,7 @@ package pl.adrian.spring6reactive.services;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.adrian.spring6reactive.domain.Beer;
 import pl.adrian.spring6reactive.mappers.BeerMapper;
 import pl.adrian.spring6reactive.model.BeerDTO;
 import pl.adrian.spring6reactive.repositories.BeerRepository;
@@ -24,6 +25,14 @@ public class BeerServiceImpl implements BeerService {
     @Override
     public Mono<BeerDTO> getBeerById(Integer beerId) {
         return beerRepository.findById(beerId)
+                .map(beerMapper::beerToBeerDto);
+    }
+
+    @Override
+    public Mono<BeerDTO> createBeer(BeerDTO beerDTO) {
+        Beer beerToSave = beerMapper.beerDtoToBeer(beerDTO);
+
+        return beerRepository.save(beerToSave)
                 .map(beerMapper::beerToBeerDto);
     }
 }
