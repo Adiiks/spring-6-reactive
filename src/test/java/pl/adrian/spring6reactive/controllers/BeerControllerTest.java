@@ -111,4 +111,11 @@ class BeerControllerTest {
                 .exchange()
                 .expectStatus().isNoContent();
     }
+
+    @Test
+    void testDeleteBeerNotFound() {
+        webTestClient.delete().uri(BeerController.BEER_PATH + "/1000")
+                .exchange()
+                .expectStatus().isNotFound();
+    }
 }
