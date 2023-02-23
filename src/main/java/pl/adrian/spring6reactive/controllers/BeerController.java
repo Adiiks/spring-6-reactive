@@ -2,6 +2,7 @@ package pl.adrian.spring6reactive.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.adrian.spring6reactive.model.BeerDTO;
@@ -31,7 +32,7 @@ public class BeerController {
     }
 
     @PostMapping
-    public Mono<ResponseEntity<Void>> createNewBeer(@RequestBody BeerDTO beerDTO) {
+    public Mono<ResponseEntity<Void>> createNewBeer(@Validated @RequestBody BeerDTO beerDTO) {
         return beerService.createBeer(beerDTO)
                 .map(beer -> ResponseEntity.created(
                         UriComponentsBuilder.fromHttpUrl("http://localhost:8080" + BEER_PATH + "/" +
@@ -41,7 +42,8 @@ public class BeerController {
     }
 
     @PutMapping("/{beerId}")
-    public Mono<ResponseEntity<Void>> updateExistingBeer(@PathVariable Integer beerId, @RequestBody BeerDTO beerDTO) {
+    public Mono<ResponseEntity<Void>> updateExistingBeer(@PathVariable Integer beerId,
+                                                         @Validated @RequestBody BeerDTO beerDTO) {
         return beerService.updateBeer(beerId, beerDTO)
                 .map(savedBeer -> ResponseEntity.ok().build());
     }
