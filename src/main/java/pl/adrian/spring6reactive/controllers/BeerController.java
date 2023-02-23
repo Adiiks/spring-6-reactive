@@ -1,9 +1,11 @@
 package pl.adrian.spring6reactive.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.adrian.spring6reactive.model.BeerDTO;
 import pl.adrian.spring6reactive.services.BeerService;
@@ -28,7 +30,8 @@ public class BeerController {
 
     @GetMapping("/{beerId}")
     public Mono<BeerDTO> getBeerById(@PathVariable Integer beerId) {
-        return beerService.getBeerById(beerId);
+        return beerService.getBeerById(beerId)
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)));
     }
 
     @PostMapping
