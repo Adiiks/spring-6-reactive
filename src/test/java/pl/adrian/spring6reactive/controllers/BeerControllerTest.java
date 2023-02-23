@@ -83,6 +83,15 @@ class BeerControllerTest {
     }
 
     @Test
+    void testUpdateBeerNotFound() {
+        webTestClient.put().uri(BeerController.BEER_PATH + "/1000")
+                .body(Mono.just(BeerRepositoryTest.getBeer()), BeerDTO.class)
+                .header("Content-type", "application/json")
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+
+    @Test
     @Order(4)
     void testUpdateBeerBadData() {
         Beer beerRequest = BeerRepositoryTest.getBeer();
