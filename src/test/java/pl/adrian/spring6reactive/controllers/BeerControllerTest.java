@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import pl.adrian.spring6reactive.model.BeerDTO;
 
 import static org.hamcrest.Matchers.hasSize;
 
@@ -22,5 +23,14 @@ class BeerControllerTest {
                 .expectStatus().isOk()
                 .expectHeader().valueEquals("Content-type", "application/json")
                 .expectBody().jsonPath("$", hasSize(3));
+    }
+
+    @Test
+    void testGetById() {
+        webTestClient.get().uri(BeerController.BEER_PATH + "/1")
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().valueEquals("Content-type", "application/json")
+                .expectBody(BeerDTO.class);
     }
 }
