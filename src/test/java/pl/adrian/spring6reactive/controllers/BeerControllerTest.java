@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import pl.adrian.spring6reactive.domain.Beer;
 import pl.adrian.spring6reactive.model.BeerDTO;
 import pl.adrian.spring6reactive.repositories.BeerRepositoryTest;
 import reactor.core.publisher.Mono;
@@ -50,6 +51,18 @@ class BeerControllerTest {
                 .exchange()
                 .expectStatus().isCreated()
                 .expectHeader().location("http://localhost:8080" + BeerController.BEER_PATH + "/4");
+    }
+
+    @Test
+    void testCreateBeerBadData() {
+        Beer beerRequest = BeerRepositoryTest.getBeer();
+        beerRequest.setBeerName("");
+
+        webTestClient.post().uri(BeerController.BEER_PATH)
+                .body(Mono.just(beerRequest), BeerDTO.class)
+                .header("Content-type", "application/json")
+                .exchange()
+                .expectStatus().isBadRequest();
     }
 
     @Test
